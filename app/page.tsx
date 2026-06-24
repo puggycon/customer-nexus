@@ -1,6 +1,5 @@
 import CustomerList from "@/components/CustomerList";
 import Header from "@/components/Header";
-import { mockCustomers } from "@/components/mockCustomers";
 import Sidebar from "@/components/Sidebar";
 
 export default function Home() {
@@ -9,7 +8,7 @@ export default function Home() {
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />
-        <CustomerList initialCustomers={mockCustomers} />
+        <CustomerList />
       </div>
     </div>
   );

@@ -2,14 +2,10 @@
 
 import { useMemo, useState } from "react";
 import CustomerRow from "./CustomerRow";
-import type { Customer } from "./types";
+import { useCustomers } from "./CustomerContext";
 
-export default function CustomerList({
-  initialCustomers,
-}: {
-  initialCustomers: Customer[];
-}) {
-  const [customers, setCustomers] = useState(initialCustomers);
+export default function CustomerList() {
+  const { customers, removeCustomer } = useCustomers();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const allSelected = customers.length > 0 && selectedIds.size === customers.length;
@@ -33,7 +29,7 @@ export default function CustomerList({
             });
           }}
           onDelete={() => {
-            setCustomers((prev) => prev.filter((c) => c.id !== customer.id));
+            removeCustomer(customer.id);
             setSelectedIds((prev) => {
               const next = new Set(prev);
               next.delete(customer.id);
@@ -42,7 +38,7 @@ export default function CustomerList({
           }}
         />
       )),
-    [customers, selectedIds],
+    [customers, selectedIds, removeCustomer],
   );
 
   return (
