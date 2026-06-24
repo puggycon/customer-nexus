@@ -1,0 +1,32 @@
+import SearchField from "./SearchField";
+import { LogoutIcon, SettingsIcon } from "./icons";
+
+export default function Sidebar() {
+  return (
+    <aside className="flex w-64 shrink-0 flex-col justify-between border-r border-zinc-200 bg-white">
+      <div className="flex flex-col gap-4 p-4">
+        <SearchField label="이름" placeholder="고객 이름 검색" />
+        <SearchField label="제품" placeholder="제품명 검색" />
+        <SearchField label="태그" placeholder="태그 검색" />
+        <SearchField label="날짜" placeholder="방문일 검색" type="date" />
+        <SearchField label="모바일 넘버" placeholder="010-0000-0000" />
+      </div>
+      <div className="flex items-center gap-2 border-t border-zinc-200 p-4">
+        <button
+          type="button"
+          aria-label="설정 및 옵션"
+          className="flex size-9 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+        >
+          <SettingsIcon className="size-5" />
+        </button>
+        <button
+          type="button"
+          aria-label="로그아웃"
+          className="flex size-9 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+        >
+          <LogoutIcon className="size-5" />
+        </button>
+      </div>
+    </aside>
+  );
+}
