@@ -23,6 +23,7 @@ type CustomerContextValue = {
   customers: Customer[];
   addCustomer: (input: NewCustomerInput) => void;
   removeCustomer: (id: string) => void;
+  updateMobile: (id: string, mobile: string) => void;
   addVisit: (customerId: string, input: NewVisitInput) => void;
   updateVisit: (customerId: string, visitId: string, input: NewVisitInput) => void;
   removeVisit: (customerId: string, visitId: string) => void;
@@ -54,6 +55,12 @@ export function CustomerProvider({
 
   function removeCustomer(id: string) {
     setCustomers((prev) => prev.filter((c) => c.id !== id));
+  }
+
+  function updateMobile(id: string, mobile: string) {
+    setCustomers((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, mobile } : c)),
+    );
   }
 
   function addVisit(customerId: string, input: NewVisitInput) {
@@ -116,6 +123,7 @@ export function CustomerProvider({
         customers,
         addCustomer,
         removeCustomer,
+        updateMobile,
         addVisit,
         updateVisit,
         removeVisit,
