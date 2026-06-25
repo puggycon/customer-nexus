@@ -1,6 +1,6 @@
 "use client";
 
-import { useId, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { CalendarIcon, SearchIcon } from "./icons";
 import { formatDate } from "./dateUtils";
 
@@ -28,6 +28,18 @@ export default function SearchField({
   const [phoneSuffix, setPhoneSuffix] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
   const [viewDate, setViewDate] = useState(() => new Date());
+  const fieldRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!showCalendar) return;
+    function handleClickOutside(e: MouseEvent) {
+      if (!fieldRef.current?.contains(e.target as Node)) {
+        setShowCalendar(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [showCalendar]);
 
   const year = viewDate.getFullYear();
   const month = viewDate.getMonth();
@@ -49,7 +61,7 @@ export default function SearchField({
       <label htmlFor={id} className="mb-1 block text-xs font-medium text-zinc-500">
         {label}
       </label>
-      <div className="relative">
+      <div className="relative" ref={fieldRef}>
         {isPhone ? (
           <div className="flex w-full items-center rounded-md border border-zinc-200 bg-zinc-50 pr-8 focus-within:border-[royalblue] focus-within:bg-white focus-within:outline focus-within:outline-2 focus-within:outline-[royalblue]">
             <span className="select-none border-r border-zinc-200 px-2 py-1.5 text-sm text-zinc-500">
