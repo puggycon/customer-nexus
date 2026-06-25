@@ -5,6 +5,7 @@ export type Visit = {
   price: number;
   durationDays: number;
   memo: string;
+  pharmacist: string;
 };
 
 export type Customer = {
@@ -13,5 +14,6 @@ export type Customer = {
   mobile: string;
   tags: string[];
   lastVisit: string;
+  lastVisitPharmacist: string;
   visits: Visit[];
 };

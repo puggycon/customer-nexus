@@ -48,6 +48,9 @@ export default function CustomerRow({
       <span className="truncate text-sm text-zinc-500">
         {customer.lastVisit}
       </span>
+      <span className="truncate text-sm text-zinc-500">
+        {customer.lastVisitPharmacist}
+      </span>
       <button
         type="button"
         onClick={(e) => {

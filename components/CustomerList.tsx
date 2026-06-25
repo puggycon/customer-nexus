@@ -114,6 +114,7 @@ export default function CustomerList() {
             />
           </button>
         </span>
+        <span>상담 판매 약사</span>
         <span />
       </div>
       {customers.length > 0 ? (

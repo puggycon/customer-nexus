@@ -24,6 +24,7 @@ export default function AddVisitForm({
     visit ? String(visit.durationDays) : "",
   );
   const [memo, setMemo] = useState(visit?.memo ?? "");
+  const [pharmacist, setPharmacist] = useState(visit?.pharmacist ?? "");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -35,6 +36,7 @@ export default function AddVisitForm({
       price: Number(price) || 0,
       durationDays: Number(durationDays) || 0,
       memo: memo.trim(),
+      pharmacist: pharmacist.trim(),
     };
 
     if (visit) {
@@ -113,6 +115,18 @@ export default function AddVisitForm({
           rows={2}
           placeholder="상담 내용을 입력하세요"
           className="w-full resize-none rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-400 focus:outline-none"
+        />
+      </div>
+      <div>
+        <label className="mb-1 block text-xs font-medium text-zinc-500">
+          상담 판매 약사
+        </label>
+        <input
+          type="text"
+          value={pharmacist}
+          onChange={(e) => setPharmacist(e.target.value)}
+          placeholder="예: 홍길동"
+          className="w-full rounded-md border border-zinc-200 bg-white px-3 py-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-blue-400 focus:outline-none"
         />
       </div>
       <div className="mt-1 flex justify-end gap-2">

@@ -16,6 +16,7 @@ type NewVisitInput = {
   price: number;
   durationDays: number;
   memo: string;
+  pharmacist: string;
 };
 
 type CustomerContextValue = {
@@ -45,6 +46,7 @@ export function CustomerProvider({
       mobile: input.mobile,
       tags: input.tags,
       lastVisit: formatToday(),
+      lastVisitPharmacist: "",
       visits: [],
     };
     setCustomers((prev) => [newCustomer, ...prev]);
@@ -62,7 +64,12 @@ export function CustomerProvider({
         const visits = [...c.visits, newVisit].sort((a, b) =>
           b.visitDate.localeCompare(a.visitDate),
         );
-        return { ...c, visits, lastVisit: visits[0].visitDate };
+        return {
+          ...c,
+          visits,
+          lastVisit: visits[0].visitDate,
+          lastVisitPharmacist: visits[0].pharmacist,
+        };
       }),
     );
   }
@@ -78,7 +85,12 @@ export function CustomerProvider({
         const visits = c.visits
           .map((v) => (v.id === visitId ? { ...v, ...input } : v))
           .sort((a, b) => b.visitDate.localeCompare(a.visitDate));
-        return { ...c, visits, lastVisit: visits[0].visitDate };
+        return {
+          ...c,
+          visits,
+          lastVisit: visits[0].visitDate,
+          lastVisitPharmacist: visits[0].pharmacist,
+        };
       }),
     );
   }
@@ -88,7 +100,12 @@ export function CustomerProvider({
       prev.map((c) => {
         if (c.id !== customerId) return c;
         const visits = c.visits.filter((v) => v.id !== visitId);
-        return { ...c, visits, lastVisit: visits[0]?.visitDate ?? c.lastVisit };
+        return {
+          ...c,
+          visits,
+          lastVisit: visits[0]?.visitDate ?? c.lastVisit,
+          lastVisitPharmacist: visits[0]?.pharmacist ?? c.lastVisitPharmacist,
+        };
       }),
     );
   }
