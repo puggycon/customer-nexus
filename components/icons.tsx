@@ -105,6 +105,21 @@ export function SortIcon({ className }: { className?: string }) {
   );
 }
 
+export function CalendarIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <rect x="3" y="5" width="18" height="16" rx="2" />
+      <path d="M3 9h18M8 3v4M16 3v4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
 export function PencilIcon({ className }: { className?: string }) {
   return (
     <svg
