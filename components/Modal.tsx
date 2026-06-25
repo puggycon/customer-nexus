@@ -3,7 +3,13 @@
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-export default function Modal({ children }: { children: React.ReactNode }) {
+export default function Modal({
+  children,
+  widthClassName = "max-w-md",
+}: {
+  children: React.ReactNode;
+  widthClassName?: string;
+}) {
   const router = useRouter();
 
   useEffect(() => {
@@ -23,7 +29,7 @@ export default function Modal({ children }: { children: React.ReactNode }) {
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-md rounded-xl bg-white p-6 shadow-xl"
+        className={`w-full ${widthClassName} rounded-xl bg-white p-6 shadow-xl`}
       >
         {children}
       </div>

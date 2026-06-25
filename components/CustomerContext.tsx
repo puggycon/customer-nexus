@@ -1,7 +1,8 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import type { Customer } from "./types";
+import { formatToday } from "./dateUtils";
+import type { Customer, Visit } from "./types";
 
 type NewCustomerInput = {
   name: string;
@@ -9,21 +10,22 @@ type NewCustomerInput = {
   tags: string[];
 };
 
+type NewVisitInput = {
+  visitDate: string;
+  product: string;
+  price: number;
+  durationDays: number;
+  memo: string;
+};
+
 type CustomerContextValue = {
   customers: Customer[];
   addCustomer: (input: NewCustomerInput) => void;
   removeCustomer: (id: string) => void;
+  addVisit: (customerId: string, input: NewVisitInput) => void;
 };
 
 const CustomerContext = createContext<CustomerContextValue | null>(null);
-
-function formatToday() {
-  const today = new Date();
-  const year = today.getFullYear();
-  const month = String(today.getMonth() + 1).padStart(2, "0");
-  const day = String(today.getDate()).padStart(2, "0");
-  return `${year}-${month}-${day}`;
-}
 
 export function CustomerProvider({
   children,
@@ -41,6 +43,7 @@ export function CustomerProvider({
       mobile: input.mobile,
       tags: input.tags,
       lastVisit: formatToday(),
+      visits: [],
     };
     setCustomers((prev) => [newCustomer, ...prev]);
   }
@@ -49,8 +52,23 @@ export function CustomerProvider({
     setCustomers((prev) => prev.filter((c) => c.id !== id));
   }
 
+  function addVisit(customerId: string, input: NewVisitInput) {
+    const newVisit: Visit = { id: crypto.randomUUID(), ...input };
+    setCustomers((prev) =>
+      prev.map((c) => {
+        if (c.id !== customerId) return c;
+        const visits = [...c.visits, newVisit].sort((a, b) =>
+          b.visitDate.localeCompare(a.visitDate),
+        );
+        return { ...c, visits, lastVisit: visits[0].visitDate };
+      }),
+    );
+  }
+
   return (
-    <CustomerContext.Provider value={{ customers, addCustomer, removeCustomer }}>
+    <CustomerContext.Provider
+      value={{ customers, addCustomer, removeCustomer, addVisit }}
+    >
       {children}
     </CustomerContext.Provider>
   );
