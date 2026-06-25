@@ -87,6 +87,24 @@ export function PlusIcon({ className }: { className?: string }) {
   );
 }
 
+export function SortIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <path
+        d="M8 6v12M8 6 5 9M8 6l3 3M16 18V6m0 12 3-3m-3 3-3-3"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function PencilIcon({ className }: { className?: string }) {
   return (
     <svg
