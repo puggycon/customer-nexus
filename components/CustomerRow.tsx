@@ -1,3 +1,4 @@
+import { CUSTOMER_LIST_GRID_COLS } from "./customerListGrid";
 import { TrashIcon } from "./icons";
 import type { Customer } from "./types";
 
@@ -13,7 +14,9 @@ export default function CustomerRow({
   onDelete: () => void;
 }) {
   return (
-    <div className="grid grid-cols-[2.5rem_1fr_9rem_1fr_8rem_3rem] items-center gap-4 border-b border-zinc-100 px-4 py-3 hover:bg-zinc-50">
+    <div
+      className={`grid ${CUSTOMER_LIST_GRID_COLS} items-center gap-4 border-b border-zinc-100 px-4 py-3 cursor-pointer transition-colors duration-150 hover:bg-zinc-100`}
+    >
       <input
         type="checkbox"
         checked={checked}

@@ -3,6 +3,7 @@
 import { useMemo, useState } from "react";
 import CustomerRow from "./CustomerRow";
 import { useCustomers } from "./CustomerContext";
+import { CUSTOMER_LIST_GRID_COLS } from "./customerListGrid";
 
 export default function CustomerList() {
   const { customers, removeCustomer } = useCustomers();
@@ -43,7 +44,9 @@ export default function CustomerList() {
 
   return (
     <div className="flex flex-1 flex-col overflow-auto">
-      <div className="grid grid-cols-[2.5rem_1fr_9rem_1fr_8rem_3rem] items-center gap-4 border-b border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-medium text-zinc-500">
+      <div
+        className={`grid ${CUSTOMER_LIST_GRID_COLS} items-center gap-4 border-b border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-medium text-zinc-500`}
+      >
         <input
           type="checkbox"
           checked={allSelected}
