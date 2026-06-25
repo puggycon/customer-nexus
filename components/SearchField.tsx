@@ -6,6 +6,12 @@ import { formatDate } from "./dateUtils";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
+function formatPhoneSuffix(raw: string) {
+  const digits = raw.replace(/\D/g, "").slice(0, 8);
+  if (digits.length <= 4) return digits;
+  return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+}
+
 export default function SearchField({
   label,
   placeholder,
@@ -13,11 +19,13 @@ export default function SearchField({
 }: {
   label: string;
   placeholder: string;
-  type?: "text" | "date";
+  type?: "text" | "date" | "phone";
 }) {
   const id = useId();
   const isDate = type === "date";
+  const isPhone = type === "phone";
   const [value, setValue] = useState("");
+  const [phoneSuffix, setPhoneSuffix] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
   const [viewDate, setViewDate] = useState(() => new Date());
 
@@ -42,18 +50,35 @@ export default function SearchField({
         {label}
       </label>
       <div className="relative">
-        <input
-          id={id}
-          type="text"
-          readOnly={isDate}
-          value={value}
-          onChange={(e) => !isDate && setValue(e.target.value)}
-          onClick={() => isDate && setShowCalendar((v) => !v)}
-          placeholder={placeholder}
-          className={`w-full rounded-md border border-zinc-200 bg-zinc-50 py-1.5 pl-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[royalblue] focus:bg-white focus:outline focus:outline-2 focus:outline-[royalblue] ${
-            isDate ? "cursor-pointer pr-14" : "pr-8"
-          }`}
-        />
+        {isPhone ? (
+          <div className="flex w-full items-center rounded-md border border-zinc-200 bg-zinc-50 pr-8 focus-within:border-[royalblue] focus-within:bg-white focus-within:outline focus-within:outline-2 focus-within:outline-[royalblue]">
+            <span className="select-none border-r border-zinc-200 px-2 py-1.5 text-sm text-zinc-500">
+              010
+            </span>
+            <input
+              id={id}
+              type="text"
+              inputMode="numeric"
+              value={phoneSuffix}
+              onChange={(e) => setPhoneSuffix(formatPhoneSuffix(e.target.value))}
+              placeholder={placeholder}
+              className="w-full bg-transparent px-2 py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+            />
+          </div>
+        ) : (
+          <input
+            id={id}
+            type="text"
+            readOnly={isDate}
+            value={value}
+            onChange={(e) => !isDate && setValue(e.target.value)}
+            onClick={() => isDate && setShowCalendar((v) => !v)}
+            placeholder={placeholder}
+            className={`w-full rounded-md border border-zinc-200 bg-zinc-50 py-1.5 pl-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[royalblue] focus:bg-white focus:outline focus:outline-2 focus:outline-[royalblue] ${
+              isDate ? "cursor-pointer pr-14" : "pr-8"
+            }`}
+          />
+        )}
         {isDate && (
           <button
             type="button"

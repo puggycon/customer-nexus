@@ -9,7 +9,8 @@ export default function Sidebar() {
         <SearchField label="제품" placeholder="제품명 검색" />
         <SearchField label="태그" placeholder="태그 검색" />
         <SearchField label="날짜" placeholder="방문일 검색" type="date" />
-        <SearchField label="모바일 넘버" placeholder="010-0000-0000" />
+        <SearchField label="폰 번호 검색" placeholder="0000-0000" type="phone" />
+        <SearchField label="마지막 상담 판매 약사" placeholder="약사명 검색" />
       </div>
       <div className="flex items-center gap-2 border-t border-zinc-200 p-4">
         <button
