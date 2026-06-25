@@ -3,34 +3,45 @@
 import { useState } from "react";
 import { useCustomers } from "./CustomerContext";
 import { formatToday } from "./dateUtils";
+import type { Visit } from "./types";
 
 export default function AddVisitForm({
   customerId,
+  visit,
   onDone,
   onCancel,
 }: {
   customerId: string;
+  visit?: Visit;
   onDone: () => void;
   onCancel: () => void;
 }) {
-  const { addVisit } = useCustomers();
-  const [visitDate, setVisitDate] = useState(formatToday());
-  const [product, setProduct] = useState("");
-  const [price, setPrice] = useState("");
-  const [durationDays, setDurationDays] = useState("");
-  const [memo, setMemo] = useState("");
+  const { addVisit, updateVisit } = useCustomers();
+  const [visitDate, setVisitDate] = useState(visit?.visitDate ?? formatToday());
+  const [product, setProduct] = useState(visit?.product ?? "");
+  const [price, setPrice] = useState(visit ? String(visit.price) : "");
+  const [durationDays, setDurationDays] = useState(
+    visit ? String(visit.durationDays) : "",
+  );
+  const [memo, setMemo] = useState(visit?.memo ?? "");
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!visitDate || !product.trim()) return;
 
-    addVisit(customerId, {
+    const input = {
       visitDate,
       product: product.trim(),
       price: Number(price) || 0,
       durationDays: Number(durationDays) || 0,
       memo: memo.trim(),
-    });
+    };
+
+    if (visit) {
+      updateVisit(customerId, visit.id, input);
+    } else {
+      addVisit(customerId, input);
+    }
     onDone();
   }
 
@@ -116,7 +127,7 @@ export default function AddVisitForm({
           type="submit"
           className="rounded-full bg-blue-600 px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:bg-blue-500 hover:shadow-lg hover:shadow-blue-500/30 hover:-translate-y-0.5 active:translate-y-0"
         >
-          저장
+          {visit ? "수정 완료" : "저장"}
         </button>
       </div>
     </form>

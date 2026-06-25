@@ -23,6 +23,8 @@ type CustomerContextValue = {
   addCustomer: (input: NewCustomerInput) => void;
   removeCustomer: (id: string) => void;
   addVisit: (customerId: string, input: NewVisitInput) => void;
+  updateVisit: (customerId: string, visitId: string, input: NewVisitInput) => void;
+  removeVisit: (customerId: string, visitId: string) => void;
 };
 
 const CustomerContext = createContext<CustomerContextValue | null>(null);
@@ -65,9 +67,42 @@ export function CustomerProvider({
     );
   }
 
+  function updateVisit(
+    customerId: string,
+    visitId: string,
+    input: NewVisitInput,
+  ) {
+    setCustomers((prev) =>
+      prev.map((c) => {
+        if (c.id !== customerId) return c;
+        const visits = c.visits
+          .map((v) => (v.id === visitId ? { ...v, ...input } : v))
+          .sort((a, b) => b.visitDate.localeCompare(a.visitDate));
+        return { ...c, visits, lastVisit: visits[0].visitDate };
+      }),
+    );
+  }
+
+  function removeVisit(customerId: string, visitId: string) {
+    setCustomers((prev) =>
+      prev.map((c) => {
+        if (c.id !== customerId) return c;
+        const visits = c.visits.filter((v) => v.id !== visitId);
+        return { ...c, visits, lastVisit: visits[0]?.visitDate ?? c.lastVisit };
+      }),
+    );
+  }
+
   return (
     <CustomerContext.Provider
-      value={{ customers, addCustomer, removeCustomer, addVisit }}
+      value={{
+        customers,
+        addCustomer,
+        removeCustomer,
+        addVisit,
+        updateVisit,
+        removeVisit,
+      }}
     >
       {children}
     </CustomerContext.Provider>

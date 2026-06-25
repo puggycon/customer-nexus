@@ -3,8 +3,10 @@
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AddVisitForm from "./AddVisitForm";
+import ConfirmDialog from "./ConfirmDialog";
 import { useCustomers } from "./CustomerContext";
 import { PlusIcon } from "./icons";
+import type { Visit } from "./types";
 import VisitHistoryTable from "./VisitHistoryTable";
 
 export default function CustomerDetailView({
@@ -13,8 +15,10 @@ export default function CustomerDetailView({
   customerId: string;
 }) {
   const router = useRouter();
-  const { customers } = useCustomers();
+  const { customers, removeVisit } = useCustomers();
   const [showForm, setShowForm] = useState(false);
+  const [editingVisit, setEditingVisit] = useState<Visit | null>(null);
+  const [deletingVisit, setDeletingVisit] = useState<Visit | null>(null);
   const customer = customers.find((c) => c.id === customerId);
 
   if (!customer) {
@@ -36,8 +40,13 @@ export default function CustomerDetailView({
     b.visitDate.localeCompare(a.visitDate),
   );
 
+  function closeForm() {
+    setShowForm(false);
+    setEditingVisit(null);
+  }
+
   return (
-    <div className="flex max-h-[80vh] flex-col gap-4">
+    <div className="flex max-h-[85vh] flex-col gap-4">
       <div className="flex items-start justify-between">
         <div>
           <h2 className="text-lg font-semibold text-zinc-900">
@@ -65,14 +74,22 @@ export default function CustomerDetailView({
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        <VisitHistoryTable visits={sortedVisits} />
+        <VisitHistoryTable
+          visits={sortedVisits}
+          onEdit={(visit) => {
+            setEditingVisit(visit);
+            setShowForm(true);
+          }}
+          onDelete={(visit) => setDeletingVisit(visit)}
+        />
       </div>
 
       {showForm ? (
         <AddVisitForm
           customerId={customer.id}
-          onDone={() => setShowForm(false)}
-          onCancel={() => setShowForm(false)}
+          visit={editingVisit ?? undefined}
+          onDone={closeForm}
+          onCancel={closeForm}
         />
       ) : (
         <button
@@ -83,6 +100,17 @@ export default function CustomerDetailView({
           <PlusIcon className="size-4" />
           새 방문/구매 기록 추가
         </button>
+      )}
+
+      {deletingVisit && (
+        <ConfirmDialog
+          message={`${deletingVisit.visitDate} 방문 기록(${deletingVisit.product})을 삭제하시겠습니까?`}
+          onCancel={() => setDeletingVisit(null)}
+          onConfirm={() => {
+            removeVisit(customer.id, deletingVisit.id);
+            setDeletingVisit(null);
+          }}
+        />
       )}
     </div>
   );

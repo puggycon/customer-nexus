@@ -9,7 +9,7 @@ export default async function CustomerDetailModal({
   const { id } = await params;
 
   return (
-    <Modal widthClassName="max-w-3xl">
+    <Modal widthClassName="max-w-6xl">
       <CustomerDetailView customerId={id} />
     </Modal>
   );
