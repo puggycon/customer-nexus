@@ -106,8 +106,8 @@ export default function CustomerDetailView({
         <ConfirmDialog
           message={`${deletingVisit.visitDate} 방문 기록(${deletingVisit.product})을 삭제하시겠습니까?`}
           onCancel={() => setDeletingVisit(null)}
-          onConfirm={() => {
-            removeVisit(customer.id, deletingVisit.id);
+          onConfirm={async () => {
+            await removeVisit(customer.id, deletingVisit.id);
             setDeletingVisit(null);
           }}
         />

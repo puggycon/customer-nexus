@@ -73,8 +73,13 @@ export default function CustomerRow({
         className="size-4 cursor-pointer rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
         aria-label={`${customer.name} 선택`}
       />
-      <span className="truncate text-sm font-bold text-[var(--text)]">
-        {customer.name}
+      <span className="flex min-w-0 items-baseline gap-2">
+        <span className="shrink-0 text-xs font-bold text-[var(--text-sub)] tabular-nums">
+          No.{customer.id}
+        </span>
+        <span className="truncate text-sm font-bold text-[var(--text)]">
+          {customer.name}
+        </span>
       </span>
       <div
         className="flex min-w-0 items-center gap-1"

@@ -1,8 +1,14 @@
 "use client";
 
 import { createContext, useContext, useState } from "react";
-import { formatToday } from "./dateUtils";
-import type { Customer, Visit } from "./types";
+import {
+  createCustomer,
+  clearCustomer,
+  createVisit,
+  updateVisit as updateVisitRow,
+  deleteVisit,
+} from "@/app/actions";
+import type { Customer } from "./types";
 
 type NewCustomerInput = {
   name: string;
@@ -21,12 +27,12 @@ type NewVisitInput = {
 
 type CustomerContextValue = {
   customers: Customer[];
-  addCustomer: (input: NewCustomerInput) => void;
-  removeCustomer: (id: string) => void;
+  addCustomer: (input: NewCustomerInput) => Promise<void>;
+  removeCustomer: (id: string) => Promise<void>;
   updateMobile: (id: string, mobile: string) => void;
-  addVisit: (customerId: string, input: NewVisitInput) => void;
-  updateVisit: (customerId: string, visitId: string, input: NewVisitInput) => void;
-  removeVisit: (customerId: string, visitId: string) => void;
+  addVisit: (customerId: string, input: NewVisitInput) => Promise<void>;
+  updateVisit: (customerId: string, visitId: string, input: NewVisitInput) => Promise<void>;
+  removeVisit: (customerId: string, visitId: string) => Promise<void>;
 };
 
 const CustomerContext = createContext<CustomerContextValue | null>(null);
@@ -40,20 +46,15 @@ export function CustomerProvider({
 }) {
   const [customers, setCustomers] = useState<Customer[]>(initialCustomers);
 
-  function addCustomer(input: NewCustomerInput) {
-    const newCustomer: Customer = {
-      id: crypto.randomUUID(),
-      name: input.name,
-      mobile: input.mobile,
-      tags: input.tags,
-      lastVisit: formatToday(),
-      lastVisitPharmacist: "",
-      visits: [],
-    };
-    setCustomers((prev) => [newCustomer, ...prev]);
+  async function addCustomer(input: NewCustomerInput) {
+    // customers 테이블에 저장 후, 저장된 행(자동 부여된 id 포함)을 리스트 끝에 추가
+    const created = await createCustomer(input);
+    setCustomers((prev) => [...prev, created]);
   }
 
-  function removeCustomer(id: string) {
+  async function removeCustomer(id: string) {
+    // 테이블 행 값을 빈값으로 변경 후, 리스트에서 제거
+    await clearCustomer(id);
     setCustomers((prev) => prev.filter((c) => c.id !== id));
   }
 
@@ -63,8 +64,9 @@ export function CustomerProvider({
     );
   }
 
-  function addVisit(customerId: string, input: NewVisitInput) {
-    const newVisit: Visit = { id: crypto.randomUUID(), ...input };
+  async function addVisit(customerId: string, input: NewVisitInput) {
+    // visits 테이블에 저장 후, 저장된 행(자동 부여된 id 포함)을 로컬 상태에 반영
+    const newVisit = await createVisit(customerId, input);
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id !== customerId) return c;
@@ -81,11 +83,12 @@ export function CustomerProvider({
     );
   }
 
-  function updateVisit(
+  async function updateVisit(
     customerId: string,
     visitId: string,
     input: NewVisitInput,
   ) {
+    await updateVisitRow(customerId, visitId, input);
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id !== customerId) return c;
@@ -102,7 +105,8 @@ export function CustomerProvider({
     );
   }
 
-  function removeVisit(customerId: string, visitId: string) {
+  async function removeVisit(customerId: string, visitId: string) {
+    await deleteVisit(customerId, visitId);
     setCustomers((prev) =>
       prev.map((c) => {
         if (c.id !== customerId) return c;
@@ -110,8 +114,8 @@ export function CustomerProvider({
         return {
           ...c,
           visits,
-          lastVisit: visits[0]?.visitDate ?? c.lastVisit,
-          lastVisitPharmacist: visits[0]?.pharmacist ?? c.lastVisitPharmacist,
+          lastVisit: visits[0]?.visitDate ?? "",
+          lastVisitPharmacist: visits[0]?.pharmacist ?? "",
         };
       }),
     );

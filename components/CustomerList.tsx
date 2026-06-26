@@ -52,9 +52,9 @@ export default function CustomerList() {
     [sortedCustomers, selectedIds, toggle],
   );
 
-  function confirmDelete() {
+  async function confirmDelete() {
     if (!deletingCustomer) return;
-    removeCustomer(deletingCustomer.id);
+    await removeCustomer(deletingCustomer.id);
     toggle(deletingCustomer.id, false);
     setDeletingCustomer(null);
   }

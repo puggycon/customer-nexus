@@ -25,9 +25,12 @@ export default function AddVisitForm({
   );
   const [memo, setMemo] = useState(visit?.memo ?? "");
   const [pharmacist, setPharmacist] = useState(visit?.pharmacist ?? "");
+  const [isSaving, setIsSaving] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    // 저장 중 중복 제출 방지
+    if (isSaving) return;
     if (!visitDate || !product.trim()) return;
 
     const input = {
@@ -39,12 +42,18 @@ export default function AddVisitForm({
       pharmacist: pharmacist.trim(),
     };
 
-    if (visit) {
-      updateVisit(customerId, visit.id, input);
-    } else {
-      addVisit(customerId, input);
+    setIsSaving(true);
+    try {
+      if (visit) {
+        await updateVisit(customerId, visit.id, input);
+      } else {
+        await addVisit(customerId, input);
+      }
+      onDone();
+    } catch {
+      // 저장 실패 시 다시 시도할 수 있도록 잠금 해제
+      setIsSaving(false);
     }
-    onDone();
   }
 
   return (
@@ -133,15 +142,17 @@ export default function AddVisitForm({
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-xl px-4 py-2 text-sm font-bold text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
+          disabled={isSaving}
+          className="rounded-xl px-4 py-2 text-sm font-bold text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)] disabled:opacity-50"
         >
           취소
         </button>
         <button
           type="submit"
-          className="rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:bg-[var(--accent-hover)] active:scale-[0.97]"
+          disabled={isSaving}
+          className="rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:bg-[var(--accent-hover)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
         >
-          {visit ? "수정 완료" : "저장"}
+          {isSaving ? "저장 중..." : visit ? "수정 완료" : "저장"}
         </button>
       </div>
     </form>

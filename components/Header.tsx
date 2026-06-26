@@ -22,7 +22,7 @@ export default function Header() {
           onClick={() => setShowSmsModal(true)}
           disabled={selectedCount === 0}
           title={selectedCount === 0 ? "고객을 선택해 주세요" : undefined}
-          className="flex items-center gap-1.5 rounded-xl bg-[var(--hover-bg)] px-5 py-2.5 text-sm font-bold text-[var(--accent)] transition-all duration-200 hover:brightness-95 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-[var(--border)] disabled:text-[var(--text-sub)] disabled:hover:brightness-100 disabled:active:scale-100"
+          className="flex items-center gap-1.5 rounded-xl bg-[var(--hover-bg)] px-5 py-2.5 text-sm font-bold text-[var(--accent)] transition-all duration-200 cursor-pointer hover:brightness-95 active:scale-[0.97] disabled:cursor-not-allowed disabled:bg-[var(--border)] disabled:text-[var(--text-sub)] disabled:hover:brightness-100 disabled:active:scale-100"
         >
           <MessageIcon className="size-4" />
           문자 발송

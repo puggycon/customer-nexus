@@ -10,9 +10,12 @@ export default function NewCustomerForm() {
   const [name, setName] = useState("");
   const [mobile, setMobile] = useState("");
   const [tags, setTags] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    // 추가 버튼 중복 클릭 방지: 저장이 진행 중이면 무시
+    if (isSubmitting) return;
     if (!name.trim()) return;
 
     const parsedTags = tags
@@ -20,8 +23,14 @@ export default function NewCustomerForm() {
       .map((tag) => tag.trim())
       .filter(Boolean);
 
-    addCustomer({ name: name.trim(), mobile: mobile.trim(), tags: parsedTags });
-    router.back();
+    setIsSubmitting(true);
+    try {
+      await addCustomer({ name: name.trim(), mobile: mobile.trim(), tags: parsedTags });
+      router.back();
+    } catch {
+      // 저장 실패 시 다시 시도할 수 있도록 잠금 해제
+      setIsSubmitting(false);
+    }
   }
 
   return (
@@ -84,15 +93,17 @@ export default function NewCustomerForm() {
         <button
           type="button"
           onClick={() => router.back()}
-          className="rounded-xl px-4 py-2 text-sm font-bold text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
+          disabled={isSubmitting}
+          className="rounded-xl px-4 py-2 text-sm font-bold text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)] disabled:opacity-50"
         >
           취소
         </button>
         <button
           type="submit"
-          className="rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:bg-[var(--accent-hover)] active:scale-[0.97]"
+          disabled={isSubmitting}
+          className="rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:bg-[var(--accent-hover)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60 disabled:active:scale-100"
         >
-          저장
+          {isSubmitting ? "저장 중..." : "저장"}
         </button>
       </div>
     </form>
