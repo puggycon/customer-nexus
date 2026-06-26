@@ -1,6 +1,7 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import ConfirmDialog from "./ConfirmDialog";
 import CustomerRow from "./CustomerRow";
 import { useCustomers } from "./CustomerContext";
 import { CUSTOMER_LIST_GRID_COLS } from "./customerListGrid";
@@ -14,6 +15,7 @@ export default function CustomerList() {
   const { customers, removeCustomer } = useCustomers();
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const [sort, setSort] = useState<SortState>(null);
+  const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
 
   const allSelected = customers.length > 0 && selectedIds.size === customers.length;
 
@@ -53,18 +55,22 @@ export default function CustomerList() {
               return next;
             });
           }}
-          onDelete={() => {
-            removeCustomer(customer.id);
-            setSelectedIds((prev) => {
-              const next = new Set(prev);
-              next.delete(customer.id);
-              return next;
-            });
-          }}
+          onDelete={() => setDeletingCustomer(customer)}
         />
       )),
-    [sortedCustomers, selectedIds, removeCustomer],
+    [sortedCustomers, selectedIds],
   );
+
+  function confirmDelete() {
+    if (!deletingCustomer) return;
+    removeCustomer(deletingCustomer.id);
+    setSelectedIds((prev) => {
+      const next = new Set(prev);
+      next.delete(deletingCustomer.id);
+      return next;
+    });
+    setDeletingCustomer(null);
+  }
 
   return (
     <div className="flex flex-1 flex-col overflow-auto">
@@ -123,6 +129,13 @@ export default function CustomerList() {
         <p className="px-4 py-10 text-center text-sm text-zinc-400">
           등록된 고객이 없습니다.
         </p>
+      )}
+      {deletingCustomer && (
+        <ConfirmDialog
+          message={`${deletingCustomer.name} 고객을 삭제하시겠습니까?`}
+          onCancel={() => setDeletingCustomer(null)}
+          onConfirm={confirmDelete}
+        />
       )}
     </div>
   );
