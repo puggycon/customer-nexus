@@ -3,12 +3,14 @@
 import Link from "next/link";
 import { useState } from "react";
 import SendSmsModal from "./SendSmsModal";
+import RepurchaseModal from "./RepurchaseModal";
 import { useSelection } from "./SelectionContext";
-import { MessageIcon, PlusIcon } from "./icons";
+import { CalendarIcon, MessageIcon, PlusIcon } from "./icons";
 
 export default function Header() {
   const { selectedIds } = useSelection();
   const [showSmsModal, setShowSmsModal] = useState(false);
+  const [showRepurchaseModal, setShowRepurchaseModal] = useState(false);
   const selectedCount = selectedIds.size;
 
   return (
@@ -24,6 +26,14 @@ export default function Header() {
         </button>
       </h1>
       <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setShowRepurchaseModal(true)}
+          className="flex items-center gap-1.5 rounded-xl bg-[var(--hover-bg)] px-5 py-2.5 text-sm font-bold text-[var(--accent)] cursor-pointer transition-all duration-200 hover:brightness-95 active:scale-[0.97]"
+        >
+          <CalendarIcon className="size-4" />
+          재구매 예상 고객 확인
+        </button>
         <button
           type="button"
           onClick={() => setShowSmsModal(true)}
@@ -48,6 +58,9 @@ export default function Header() {
         </Link>
       </div>
       {showSmsModal && <SendSmsModal onClose={() => setShowSmsModal(false)} />}
+      {showRepurchaseModal && (
+        <RepurchaseModal onClose={() => setShowRepurchaseModal(false)} />
+      )}
     </header>
   );
 }
