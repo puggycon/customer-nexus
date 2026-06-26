@@ -4,6 +4,7 @@ import { createContext, useContext, useState } from "react";
 import {
   createCustomer,
   clearCustomer,
+  updateCustomerTags,
   createVisit,
   updateVisit as updateVisitRow,
   deleteVisit,
@@ -30,6 +31,7 @@ type CustomerContextValue = {
   addCustomer: (input: NewCustomerInput) => Promise<void>;
   removeCustomer: (id: string) => Promise<void>;
   updateMobile: (id: string, mobile: string) => void;
+  updateTags: (id: string, tags: string[]) => Promise<void>;
   addVisit: (customerId: string, input: NewVisitInput) => Promise<void>;
   updateVisit: (customerId: string, visitId: string, input: NewVisitInput) => Promise<void>;
   removeVisit: (customerId: string, visitId: string) => Promise<void>;
@@ -61,6 +63,14 @@ export function CustomerProvider({
   function updateMobile(id: string, mobile: string) {
     setCustomers((prev) =>
       prev.map((c) => (c.id === id ? { ...c, mobile } : c)),
+    );
+  }
+
+  async function updateTags(id: string, tags: string[]) {
+    // customers.tags 테이블에 저장 후 로컬 상태 반영
+    await updateCustomerTags(id, tags);
+    setCustomers((prev) =>
+      prev.map((c) => (c.id === id ? { ...c, tags } : c)),
     );
   }
 
@@ -128,6 +138,7 @@ export function CustomerProvider({
         addCustomer,
         removeCustomer,
         updateMobile,
+        updateTags,
         addVisit,
         updateVisit,
         removeVisit,

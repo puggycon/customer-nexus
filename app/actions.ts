@@ -91,6 +91,16 @@ export async function clearCustomer(id: string): Promise<void> {
   if (error) throw new Error(error.message);
 }
 
+// 고객 태그 수정 (customers.tags 컬럼 갱신)
+export async function updateCustomerTags(id: string, tags: string[]): Promise<void> {
+  const supabase = createClient(await cookies());
+  const { error } = await supabase
+    .from("customers")
+    .update({ tags })
+    .eq("id", Number(id));
+  if (error) throw new Error(error.message);
+}
+
 // 고객 세부 정보(방문/구매 기록)를 visits 테이블에 저장
 export async function createVisit(
   customerId: string,

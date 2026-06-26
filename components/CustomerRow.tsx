@@ -28,10 +28,13 @@ export default function CustomerRow({
   onDelete: () => void;
 }) {
   const router = useRouter();
-  const { updateMobile } = useCustomers();
+  const { updateMobile, updateTags } = useCustomers();
   const [isEditing, setIsEditing] = useState(false);
   const [editValue, setEditValue] = useState("");
   const cancelledRef = useRef(false);
+  const [isEditingTags, setIsEditingTags] = useState(false);
+  const [tagsValue, setTagsValue] = useState("");
+  const tagsCancelledRef = useRef(false);
 
   function startEdit() {
     setEditValue(customer.mobile);
@@ -58,6 +61,37 @@ export default function CustomerRow({
       return;
     }
     confirm();
+  }
+
+  function startTagEdit() {
+    setTagsValue(customer.tags.join(", "));
+    setIsEditingTags(true);
+  }
+
+  function confirmTags() {
+    const parsedTags = tagsValue
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+    updateTags(customer.id, parsedTags);
+    setIsEditingTags(false);
+  }
+
+  function handleTagsKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
+    if (e.key === "Enter") {
+      confirmTags();
+    } else if (e.key === "Escape") {
+      tagsCancelledRef.current = true;
+      setIsEditingTags(false);
+    }
+  }
+
+  function handleTagsBlur() {
+    if (tagsCancelledRef.current) {
+      tagsCancelledRef.current = false;
+      return;
+    }
+    confirmTags();
   }
 
   return (
@@ -111,15 +145,41 @@ export default function CustomerRow({
           </>
         )}
       </div>
-      <div className="flex flex-wrap gap-1.5">
-        {customer.tags.map((tag) => (
-          <span
-            key={tag}
-            className="rounded-lg bg-[var(--hover-bg)] px-2.5 py-0.5 text-xs font-bold text-[var(--accent)]"
-          >
-            {tag}
-          </span>
-        ))}
+      <div
+        className="flex min-w-0 flex-wrap items-center gap-1.5"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {isEditingTags ? (
+          <input
+            autoFocus
+            type="text"
+            value={tagsValue}
+            onChange={(e) => setTagsValue(e.target.value)}
+            onKeyDown={handleTagsKeyDown}
+            onBlur={handleTagsBlur}
+            placeholder="태그 (쉼표로 구분)"
+            className="w-full rounded-lg border border-[var(--border)] px-1.5 py-0.5 text-sm text-[var(--text)] placeholder:text-[var(--placeholder)] transition-colors duration-200 focus:border-[var(--accent)] focus:outline-none"
+          />
+        ) : (
+          <>
+            {customer.tags.map((tag) => (
+              <span
+                key={tag}
+                className="rounded-lg bg-[var(--hover-bg)] px-2.5 py-0.5 text-xs font-bold text-[var(--accent)]"
+              >
+                {tag}
+              </span>
+            ))}
+            <button
+              type="button"
+              aria-label="태그 수정"
+              onClick={startTagEdit}
+              className="flex size-6 shrink-0 items-center justify-center rounded-lg text-[var(--text-sub)] opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
+            >
+              <PencilIcon className="size-3.5" />
+            </button>
+          </>
+        )}
       </div>
       <span className="truncate text-sm text-[var(--text-sub)]">
         {customer.lastVisit}
