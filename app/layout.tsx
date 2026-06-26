@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CustomerProvider } from "@/components/CustomerContext";
+import { SelectionProvider } from "@/components/SelectionContext";
 import { mockCustomers } from "@/components/mockCustomers";
 import "./globals.css";
 
@@ -33,8 +34,10 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col">
         <CustomerProvider initialCustomers={mockCustomers}>
-          {children}
-          {modal}
+          <SelectionProvider>
+            {children}
+            {modal}
+          </SelectionProvider>
         </CustomerProvider>
       </body>
     </html>

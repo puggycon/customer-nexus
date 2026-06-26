@@ -4,6 +4,7 @@ import { useMemo, useState } from "react";
 import ConfirmDialog from "./ConfirmDialog";
 import CustomerRow from "./CustomerRow";
 import { useCustomers } from "./CustomerContext";
+import { useSelection } from "./SelectionContext";
 import { CUSTOMER_LIST_GRID_COLS } from "./customerListGrid";
 import { SortIcon } from "./icons";
 import type { Customer } from "./types";
@@ -13,7 +14,7 @@ type SortState = { key: SortKey; direction: "asc" | "desc" } | null;
 
 export default function CustomerList() {
   const { customers, removeCustomer } = useCustomers();
-  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
+  const { selectedIds, toggle, replace, clear } = useSelection();
   const [sort, setSort] = useState<SortState>(null);
   const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
 
@@ -44,31 +45,17 @@ export default function CustomerList() {
           key={customer.id}
           customer={customer}
           checked={selectedIds.has(customer.id)}
-          onCheckedChange={(checked) => {
-            setSelectedIds((prev) => {
-              const next = new Set(prev);
-              if (checked) {
-                next.add(customer.id);
-              } else {
-                next.delete(customer.id);
-              }
-              return next;
-            });
-          }}
+          onCheckedChange={(checked) => toggle(customer.id, checked)}
           onDelete={() => setDeletingCustomer(customer)}
         />
       )),
-    [sortedCustomers, selectedIds],
+    [sortedCustomers, selectedIds, toggle],
   );
 
   function confirmDelete() {
     if (!deletingCustomer) return;
     removeCustomer(deletingCustomer.id);
-    setSelectedIds((prev) => {
-      const next = new Set(prev);
-      next.delete(deletingCustomer.id);
-      return next;
-    });
+    toggle(deletingCustomer.id, false);
     setDeletingCustomer(null);
   }
 
@@ -81,9 +68,7 @@ export default function CustomerList() {
           type="checkbox"
           checked={allSelected}
           onChange={(e) =>
-            setSelectedIds(
-              e.target.checked ? new Set(customers.map((c) => c.id)) : new Set(),
-            )
+            e.target.checked ? replace(customers.map((c) => c.id)) : clear()
           }
           className="size-4 cursor-pointer rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
           aria-label="전체 선택"
