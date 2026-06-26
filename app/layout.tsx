@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import { CustomerProvider } from "@/components/CustomerContext";
 import { SelectionProvider } from "@/components/SelectionContext";
+import { SearchProvider } from "@/components/SearchContext";
 import { getCustomers } from "@/utils/customers";
 import "./globals.css";
 
@@ -37,8 +38,10 @@ export default async function RootLayout({
       <body className="min-h-full flex flex-col">
         <CustomerProvider initialCustomers={customers}>
           <SelectionProvider>
-            {children}
-            {modal}
+            <SearchProvider>
+              {children}
+              {modal}
+            </SearchProvider>
           </SelectionProvider>
         </CustomerProvider>
       </body>

@@ -5,6 +5,7 @@ import ConfirmDialog from "./ConfirmDialog";
 import CustomerRow from "./CustomerRow";
 import { useCustomers } from "./CustomerContext";
 import { useSelection } from "./SelectionContext";
+import { useSearch, type SearchCriteria } from "./SearchContext";
 import { CUSTOMER_LIST_GRID_COLS } from "./customerListGrid";
 import { SortIcon } from "./icons";
 import type { Customer } from "./types";
@@ -12,13 +13,47 @@ import type { Customer } from "./types";
 type SortKey = "name" | "lastVisit";
 type SortState = { key: SortKey; direction: "asc" | "desc" } | null;
 
+const digitsOnly = (value: string) => value.replace(/\D/g, "");
+
+// 검색 기준에 맞는 고객인지 판별 (입력된 기준만 AND 로 적용)
+function matchesCriteria(customer: Customer, criteria: SearchCriteria): boolean {
+  // 이름·날짜·폰번호·약사: 일치(완전 일치)
+  if (criteria.name && customer.name !== criteria.name) return false;
+  if (criteria.date && customer.lastVisit !== criteria.date) return false;
+  if (criteria.phone && digitsOnly(customer.mobile) !== criteria.phone) return false;
+  if (criteria.pharmacist && customer.lastVisitPharmacist !== criteria.pharmacist) {
+    return false;
+  }
+  // 태그·제품: 일치 또는 포함
+  if (criteria.tag && !customer.tags.some((tag) => tag.includes(criteria.tag))) {
+    return false;
+  }
+  if (
+    criteria.product &&
+    !customer.visits.some((visit) => visit.product.includes(criteria.product))
+  ) {
+    return false;
+  }
+  return true;
+}
+
 export default function CustomerList() {
   const { customers, removeCustomer } = useCustomers();
   const { selectedIds, toggle, replace, clear } = useSelection();
+  const { criteria } = useSearch();
   const [sort, setSort] = useState<SortState>(null);
   const [deletingCustomer, setDeletingCustomer] = useState<Customer | null>(null);
 
-  const allSelected = customers.length > 0 && selectedIds.size === customers.length;
+  const hasActiveSearch = Object.values(criteria).some((value) => value !== "");
+
+  const filteredCustomers = useMemo(
+    () => customers.filter((c) => matchesCriteria(c, criteria)),
+    [customers, criteria],
+  );
+
+  const allSelected =
+    filteredCustomers.length > 0 &&
+    filteredCustomers.every((c) => selectedIds.has(c.id));
 
   function toggleSort(key: SortKey) {
     setSort((prev) => {
@@ -29,14 +64,14 @@ export default function CustomerList() {
   }
 
   const sortedCustomers = useMemo(() => {
-    if (!sort) return customers;
-    const sorted = [...customers].sort((a, b) =>
+    if (!sort) return filteredCustomers;
+    const sorted = [...filteredCustomers].sort((a, b) =>
       sort.key === "name"
         ? a.name.localeCompare(b.name, "ko")
         : a.lastVisit.localeCompare(b.lastVisit),
     );
     return sort.direction === "asc" ? sorted : sorted.reverse();
-  }, [customers, sort]);
+  }, [filteredCustomers, sort]);
 
   const tableRows = useMemo(
     () =>
@@ -68,7 +103,9 @@ export default function CustomerList() {
           type="checkbox"
           checked={allSelected}
           onChange={(e) =>
-            e.target.checked ? replace(customers.map((c) => c.id)) : clear()
+            e.target.checked
+              ? replace(filteredCustomers.map((c) => c.id))
+              : clear()
           }
           className="size-4 cursor-pointer rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
           aria-label="전체 선택"
@@ -108,11 +145,11 @@ export default function CustomerList() {
         <span>마지막 상담 판매 약사</span>
         <span />
       </div>
-      {customers.length > 0 ? (
+      {filteredCustomers.length > 0 ? (
         tableRows
       ) : (
         <p className="px-4 py-10 text-center text-sm text-[var(--text-sub)]">
-          등록된 고객이 없습니다.
+          {hasActiveSearch ? "검색 결과가 없습니다." : "등록된 고객이 없습니다."}
         </p>
       )}
       {deletingCustomer && (

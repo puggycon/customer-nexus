@@ -3,6 +3,7 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { CalendarIcon, CloseIcon, SearchIcon } from "./icons";
 import { formatDate } from "./dateUtils";
+import { useSearch, type SearchFieldKey } from "./SearchContext";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -16,19 +17,34 @@ export default function SearchField({
   label,
   placeholder,
   type = "text",
+  field,
 }: {
   label: string;
   placeholder: string;
   type?: "text" | "date" | "phone";
+  field: SearchFieldKey;
 }) {
   const id = useId();
   const isDate = type === "date";
   const isPhone = type === "phone";
+  const { setField } = useSearch();
   const [value, setValue] = useState("");
   const [phoneSuffix, setPhoneSuffix] = useState("");
   const [showCalendar, setShowCalendar] = useState(false);
   const [viewDate, setViewDate] = useState(() => new Date());
   const fieldRef = useRef<HTMLDivElement>(null);
+
+  // 입력값을 검색 기준으로 반영 (폰 번호는 010 접두사를 붙인 숫자로 정규화)
+  const phoneDigits = phoneSuffix.replace(/\D/g, "");
+  const query = isPhone
+    ? phoneDigits
+      ? `010${phoneDigits}`
+      : ""
+    : value.trim();
+
+  useEffect(() => {
+    setField(field, query);
+  }, [field, query, setField]);
 
   useEffect(() => {
     if (!showCalendar) return;
