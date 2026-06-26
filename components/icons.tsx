@@ -152,6 +152,25 @@ export function CalendarIcon({ className }: { className?: string }) {
   );
 }
 
+export function ChartIcon({ className }: { className?: string }) {
+  return (
+    <svg
+      className={className}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="1.5"
+    >
+      <path d="M4 4v15a1 1 0 0 0 1 1h15" strokeLinecap="round" />
+      <path
+        d="M8 14v3M12.5 10v7M17 6v11"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function PencilIcon({ className }: { className?: string }) {
   return (
     <svg

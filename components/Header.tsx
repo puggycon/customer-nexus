@@ -4,13 +4,15 @@ import Link from "next/link";
 import { useState } from "react";
 import SendSmsModal from "./SendSmsModal";
 import RepurchaseModal from "./RepurchaseModal";
+import SalesStatsModal from "./SalesStatsModal";
 import { useSelection } from "./SelectionContext";
-import { CalendarIcon, MessageIcon, PlusIcon } from "./icons";
+import { CalendarIcon, ChartIcon, MessageIcon, PlusIcon } from "./icons";
 
 export default function Header() {
   const { selectedIds } = useSelection();
   const [showSmsModal, setShowSmsModal] = useState(false);
   const [showRepurchaseModal, setShowRepurchaseModal] = useState(false);
+  const [showStatsModal, setShowStatsModal] = useState(false);
   const selectedCount = selectedIds.size;
 
   return (
@@ -26,6 +28,14 @@ export default function Header() {
         </button>
       </h1>
       <div className="flex items-center gap-2">
+        <button
+          type="button"
+          onClick={() => setShowStatsModal(true)}
+          className="flex items-center gap-1.5 rounded-xl bg-[var(--hover-bg)] px-5 py-2.5 text-sm font-bold text-[var(--accent)] cursor-pointer transition-all duration-200 hover:brightness-95 active:scale-[0.97]"
+        >
+          <ChartIcon className="size-4" />
+          매출 통계
+        </button>
         <button
           type="button"
           onClick={() => setShowRepurchaseModal(true)}
@@ -60,6 +70,9 @@ export default function Header() {
       {showSmsModal && <SendSmsModal onClose={() => setShowSmsModal(false)} />}
       {showRepurchaseModal && (
         <RepurchaseModal onClose={() => setShowRepurchaseModal(false)} />
+      )}
+      {showStatsModal && (
+        <SalesStatsModal onClose={() => setShowStatsModal(false)} />
       )}
     </header>
   );
