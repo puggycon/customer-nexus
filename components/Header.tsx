@@ -14,7 +14,14 @@ export default function Header() {
   return (
     <header className="flex h-16 shrink-0 items-center justify-between border-b border-[var(--border)] bg-[var(--card)] px-6 shadow-[0_1px_0_rgba(0,0,0,0.06)]">
       <h1 className="text-xl font-bold tracking-tight text-[var(--text)]">
-        탑미래약국 고객 관리 프로그램
+        <button
+          type="button"
+          onClick={() => window.location.reload()}
+          aria-label="페이지 새로고침"
+          className="cursor-pointer transition-colors duration-200 hover:text-[var(--accent)]"
+        >
+          탑미래약국 고객 관리 프로그램
+        </button>
       </h1>
       <div className="flex items-center gap-2">
         <button
