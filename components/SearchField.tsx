@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useId, useRef, useState } from "react";
-import { CalendarIcon, SearchIcon } from "./icons";
+import { CalendarIcon, CloseIcon, SearchIcon } from "./icons";
 import { formatDate } from "./dateUtils";
 
 const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
@@ -56,6 +56,15 @@ export default function SearchField({
     setViewDate((prev) => new Date(prev.getFullYear(), prev.getMonth() + offset, 1));
   }
 
+  const hasValue = isPhone ? phoneSuffix !== "" : value !== "";
+
+  function reset() {
+    setValue("");
+    setPhoneSuffix("");
+    setShowCalendar(false);
+    setViewDate(new Date());
+  }
+
   return (
     <div>
       <label htmlFor={id} className="mb-1 block text-xs font-bold text-[var(--text-sub)]">
@@ -63,7 +72,7 @@ export default function SearchField({
       </label>
       <div className="relative" ref={fieldRef}>
         {isPhone ? (
-          <div className="flex w-full items-center rounded-[10px] border border-[var(--border)] bg-[var(--card)] pr-8 transition-colors duration-200 focus-within:border-[var(--accent)]">
+          <div className="flex w-full items-center rounded-[10px] border border-[var(--border)] bg-[var(--card)] pr-14 transition-colors duration-200 focus-within:border-[var(--accent)]">
             <span className="select-none border-r border-[var(--border)] px-2 py-1.5 text-sm text-[var(--text-sub)]">
               010
             </span>
@@ -87,7 +96,7 @@ export default function SearchField({
             onClick={() => isDate && setShowCalendar((v) => !v)}
             placeholder={placeholder}
             className={`w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] py-1.5 pl-2 text-sm text-[var(--text)] placeholder:text-[var(--placeholder)] transition-colors duration-200 focus:border-[var(--accent)] focus:outline-none ${
-              isDate ? "cursor-pointer pr-14" : "pr-8"
+              isDate ? "cursor-pointer pr-20" : "pr-14"
             }`}
           />
         )}
@@ -96,9 +105,19 @@ export default function SearchField({
             type="button"
             aria-label="달력 열기"
             onClick={() => setShowCalendar((v) => !v)}
-            className="absolute right-8 top-1/2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg text-[var(--text-sub)] transition-all duration-200 hover:scale-110 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
+            className="absolute right-14 top-1/2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg text-[var(--text-sub)] transition-all duration-200 hover:scale-110 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
           >
             <CalendarIcon className="size-3.5" />
+          </button>
+        )}
+        {hasValue && (
+          <button
+            type="button"
+            aria-label={`${label} 입력 초기화`}
+            onClick={reset}
+            className="absolute right-8 top-1/2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg text-[var(--text-sub)] transition-all duration-200 hover:scale-110 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
+          >
+            <CloseIcon className="size-3.5" />
           </button>
         )}
         <button
