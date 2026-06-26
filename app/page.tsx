@@ -4,7 +4,7 @@ import Sidebar from "@/components/Sidebar";
 
 export default function Home() {
   return (
-    <div className="flex flex-1 flex-col bg-zinc-50 font-sans">
+    <div className="flex flex-1 flex-col bg-[var(--background)] font-sans">
       <Header />
       <div className="flex flex-1 overflow-hidden">
         <Sidebar />

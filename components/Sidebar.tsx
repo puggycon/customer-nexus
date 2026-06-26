@@ -3,7 +3,7 @@ import { LogoutIcon, SettingsIcon } from "./icons";
 
 export default function Sidebar() {
   return (
-    <aside className="flex w-64 shrink-0 flex-col justify-between border-r border-zinc-200 bg-white">
+    <aside className="flex w-64 shrink-0 flex-col justify-between border-r border-[var(--border)] bg-[var(--card)]">
       <div className="flex flex-col gap-4 p-4">
         <SearchField label="이름" placeholder="고객 이름 검색" />
         <SearchField label="제품" placeholder="제품명 검색" />
@@ -12,18 +12,18 @@ export default function Sidebar() {
         <SearchField label="폰 번호 검색" placeholder="0000-0000" type="phone" />
         <SearchField label="마지막 상담 판매 약사" placeholder="약사명 검색" />
       </div>
-      <div className="flex items-center gap-2 border-t border-zinc-200 p-4">
+      <div className="flex items-center gap-2 border-t border-[var(--border)] p-4">
         <button
           type="button"
           aria-label="설정 및 옵션"
-          className="flex size-9 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+          className="flex size-9 items-center justify-center rounded-xl text-[var(--text-sub)] transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
         >
           <SettingsIcon className="size-5" />
         </button>
         <button
           type="button"
           aria-label="로그아웃"
-          className="flex size-9 items-center justify-center rounded-md text-zinc-500 transition-colors hover:bg-zinc-100 hover:text-zinc-900"
+          className="flex size-9 items-center justify-center rounded-xl text-[var(--text-sub)] transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
         >
           <LogoutIcon className="size-5" />
         </button>

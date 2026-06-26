@@ -75,7 +75,7 @@ export default function CustomerList() {
   return (
     <div className="flex flex-1 flex-col overflow-auto">
       <div
-        className={`grid ${CUSTOMER_LIST_GRID_COLS} items-center gap-4 border-b border-zinc-200 bg-zinc-50 px-4 py-2 text-xs font-medium text-zinc-500`}
+        className={`grid ${CUSTOMER_LIST_GRID_COLS} items-center gap-4 border-b border-[var(--border)] bg-[var(--background)] px-4 py-2 text-xs font-bold text-[var(--text-sub)]`}
       >
         <input
           type="checkbox"
@@ -85,7 +85,7 @@ export default function CustomerList() {
               e.target.checked ? new Set(customers.map((c) => c.id)) : new Set(),
             )
           }
-          className="size-4 cursor-pointer rounded border-zinc-300 text-zinc-900 focus:ring-zinc-400"
+          className="size-4 cursor-pointer rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
           aria-label="전체 선택"
         />
         <span className="flex items-center gap-1">
@@ -94,8 +94,8 @@ export default function CustomerList() {
             type="button"
             onClick={() => toggleSort("name")}
             aria-label="고객 이름 가나다순 정렬"
-            className={`flex size-5 items-center justify-center rounded transition-colors hover:bg-zinc-200 ${
-              sort?.key === "name" ? "text-zinc-900" : "text-zinc-400"
+            className={`flex size-5 items-center justify-center rounded-lg transition-colors duration-200 hover:bg-[var(--hover-bg)] ${
+              sort?.key === "name" ? "text-[var(--accent)]" : "text-[var(--text-sub)]"
             }`}
           >
             <SortIcon
@@ -111,8 +111,8 @@ export default function CustomerList() {
             type="button"
             onClick={() => toggleSort("lastVisit")}
             aria-label="최근 방문일 순 정렬"
-            className={`flex size-5 items-center justify-center rounded transition-colors hover:bg-zinc-200 ${
-              sort?.key === "lastVisit" ? "text-zinc-900" : "text-zinc-400"
+            className={`flex size-5 items-center justify-center rounded-lg transition-colors duration-200 hover:bg-[var(--hover-bg)] ${
+              sort?.key === "lastVisit" ? "text-[var(--accent)]" : "text-[var(--text-sub)]"
             }`}
           >
             <SortIcon
@@ -126,7 +126,7 @@ export default function CustomerList() {
       {customers.length > 0 ? (
         tableRows
       ) : (
-        <p className="px-4 py-10 text-center text-sm text-zinc-400">
+        <p className="px-4 py-10 text-center text-sm text-[var(--text-sub)]">
           등록된 고객이 없습니다.
         </p>
       )}

@@ -58,13 +58,13 @@ export default function SearchField({
 
   return (
     <div>
-      <label htmlFor={id} className="mb-1 block text-xs font-medium text-zinc-500">
+      <label htmlFor={id} className="mb-1 block text-xs font-bold text-[var(--text-sub)]">
         {label}
       </label>
       <div className="relative" ref={fieldRef}>
         {isPhone ? (
-          <div className="flex w-full items-center rounded-md border border-zinc-200 bg-zinc-50 pr-8 focus-within:border-[royalblue] focus-within:bg-white focus-within:outline focus-within:outline-2 focus-within:outline-[royalblue]">
-            <span className="select-none border-r border-zinc-200 px-2 py-1.5 text-sm text-zinc-500">
+          <div className="flex w-full items-center rounded-[10px] border border-[var(--border)] bg-[var(--card)] pr-8 transition-colors duration-200 focus-within:border-[var(--accent)]">
+            <span className="select-none border-r border-[var(--border)] px-2 py-1.5 text-sm text-[var(--text-sub)]">
               010
             </span>
             <input
@@ -74,7 +74,7 @@ export default function SearchField({
               value={phoneSuffix}
               onChange={(e) => setPhoneSuffix(formatPhoneSuffix(e.target.value))}
               placeholder={placeholder}
-              className="w-full bg-transparent px-2 py-1.5 text-sm text-zinc-900 placeholder:text-zinc-400 focus:outline-none"
+              className="w-full bg-transparent px-2 py-1.5 text-sm text-[var(--text)] placeholder:text-[var(--placeholder)] focus:outline-none"
             />
           </div>
         ) : (
@@ -86,7 +86,7 @@ export default function SearchField({
             onChange={(e) => !isDate && setValue(e.target.value)}
             onClick={() => isDate && setShowCalendar((v) => !v)}
             placeholder={placeholder}
-            className={`w-full rounded-md border border-zinc-200 bg-zinc-50 py-1.5 pl-2 text-sm text-zinc-900 placeholder:text-zinc-400 focus:border-[royalblue] focus:bg-white focus:outline focus:outline-2 focus:outline-[royalblue] ${
+            className={`w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] py-1.5 pl-2 text-sm text-[var(--text)] placeholder:text-[var(--placeholder)] transition-colors duration-200 focus:border-[var(--accent)] focus:outline-none ${
               isDate ? "cursor-pointer pr-14" : "pr-8"
             }`}
           />
@@ -96,7 +96,7 @@ export default function SearchField({
             type="button"
             aria-label="달력 열기"
             onClick={() => setShowCalendar((v) => !v)}
-            className="absolute right-8 top-1/2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded text-zinc-400 transition-all hover:scale-110 hover:bg-zinc-200 hover:text-zinc-600"
+            className="absolute right-8 top-1/2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg text-[var(--text-sub)] transition-all duration-200 hover:scale-110 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
           >
             <CalendarIcon className="size-3.5" />
           </button>
@@ -104,37 +104,37 @@ export default function SearchField({
         <button
           type="button"
           aria-label={`${label} 검색 실행`}
-          className="absolute right-1.5 top-1/2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded text-zinc-400 transition-all hover:scale-110 hover:bg-zinc-200 hover:text-zinc-600"
+          className="absolute right-1.5 top-1/2 flex size-6 -translate-y-1/2 cursor-pointer items-center justify-center rounded-lg text-[var(--text-sub)] transition-all duration-200 hover:scale-110 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
         >
           <SearchIcon className="size-3.5" />
         </button>
 
         {isDate && showCalendar && (
-          <div className="absolute left-0 top-full z-20 mt-1 w-60 rounded-md border border-zinc-200 bg-white p-3 shadow-lg">
+          <div className="absolute left-0 top-full z-20 mt-1 w-60 rounded-2xl border border-[var(--border)] bg-[var(--card)] p-3 shadow-[0_2px_10px_rgba(0,0,0,0.1)]">
             <div className="mb-2 flex items-center justify-between">
               <button
                 type="button"
                 aria-label="이전 달"
                 onClick={() => changeMonth(-1)}
-                className="rounded px-1.5 py-0.5 text-zinc-500 hover:bg-zinc-100"
+                className="rounded-lg px-1.5 py-0.5 text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
               >
                 ‹
               </button>
-              <span className="text-sm font-medium text-zinc-700">
+              <span className="text-sm font-bold text-[var(--text)]">
                 {year}년 {month + 1}월
               </span>
               <button
                 type="button"
                 aria-label="다음 달"
                 onClick={() => changeMonth(1)}
-                className="rounded px-1.5 py-0.5 text-zinc-500 hover:bg-zinc-100"
+                className="rounded-lg px-1.5 py-0.5 text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
               >
                 ›
               </button>
             </div>
             <div className="grid grid-cols-7 gap-y-1 text-center text-xs">
               {WEEKDAYS.map((weekday) => (
-                <span key={weekday} className="text-zinc-400">
+                <span key={weekday} className="text-[var(--text-sub)]">
                   {weekday}
                 </span>
               ))}
@@ -153,10 +153,10 @@ export default function SearchField({
                     key={day}
                     type="button"
                     onClick={() => selectDay(day)}
-                    className={`rounded py-1 ${
+                    className={`rounded-lg py-1 transition-colors duration-200 ${
                       isSelected
-                        ? "bg-[royalblue] text-white"
-                        : "text-zinc-700 hover:bg-zinc-100"
+                        ? "bg-[var(--accent)] font-bold text-white"
+                        : "text-[var(--text)] hover:bg-[var(--hover-bg)]"
                     }`}
                   >
                     {day}
@@ -164,11 +164,11 @@ export default function SearchField({
                 );
               })}
             </div>
-            <div className="mt-3 flex justify-end border-t border-zinc-100 pt-2">
+            <div className="mt-3 flex justify-end border-t border-[var(--border)] pt-2">
               <button
                 type="button"
                 onClick={() => setShowCalendar(false)}
-                className="rounded-full px-3 py-1 text-xs font-medium text-zinc-600 transition-colors hover:bg-zinc-100"
+                className="rounded-full px-3 py-1 text-xs font-bold text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
               >
                 닫기
               </button>

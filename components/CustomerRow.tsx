@@ -63,17 +63,17 @@ export default function CustomerRow({
   return (
     <div
       onClick={() => router.push(`/customers/${customer.id}`)}
-      className={`group grid ${CUSTOMER_LIST_GRID_COLS} items-center gap-4 border-b border-zinc-100 px-4 py-3 cursor-pointer transition-colors duration-150 hover:bg-zinc-100`}
+      className={`group grid ${CUSTOMER_LIST_GRID_COLS} items-center gap-4 border-b border-[var(--border)] px-4 py-3 cursor-pointer transition-colors duration-200 hover:bg-[var(--hover-bg)]`}
     >
       <input
         type="checkbox"
         checked={checked}
         onClick={(e) => e.stopPropagation()}
         onChange={(e) => onCheckedChange(e.target.checked)}
-        className="size-4 cursor-pointer rounded border-zinc-300 text-zinc-900 focus:ring-zinc-400"
+        className="size-4 cursor-pointer rounded border-[var(--border)] text-[var(--accent)] focus:ring-[var(--accent)]"
         aria-label={`${customer.name} 선택`}
       />
-      <span className="truncate text-sm font-medium text-zinc-900">
+      <span className="truncate text-sm font-bold text-[var(--text)]">
         {customer.name}
       </span>
       <div
@@ -88,18 +88,18 @@ export default function CustomerRow({
             onChange={(e) => setEditValue(e.target.value)}
             onKeyDown={handleKeyDown}
             onBlur={handleBlur}
-            className="w-full rounded border border-zinc-300 px-1.5 py-0.5 text-sm text-zinc-900 focus:border-[royalblue] focus:outline focus:outline-2 focus:outline-[royalblue]"
+            className="w-full rounded-lg border border-[var(--border)] px-1.5 py-0.5 text-sm text-[var(--text)] transition-colors duration-200 focus:border-[var(--accent)] focus:outline-none"
           />
         ) : (
           <>
-            <span className="truncate text-sm text-zinc-600">
+            <span className="truncate text-sm text-[var(--text-sub)]">
               {formatMobile(customer.mobile)}
             </span>
             <button
               type="button"
               aria-label="모바일 번호 수정"
               onClick={startEdit}
-              className="flex size-6 shrink-0 items-center justify-center rounded text-zinc-400 opacity-0 transition-opacity group-hover:opacity-100 hover:bg-zinc-200 hover:text-zinc-600"
+              className="flex size-6 shrink-0 items-center justify-center rounded-lg text-[var(--text-sub)] opacity-0 transition-all duration-200 group-hover:opacity-100 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
             >
               <PencilIcon className="size-3.5" />
             </button>
@@ -110,16 +110,16 @@ export default function CustomerRow({
         {customer.tags.map((tag) => (
           <span
             key={tag}
-            className="rounded-full bg-zinc-100 px-2 py-0.5 text-xs text-zinc-600"
+            className="rounded-lg bg-[var(--hover-bg)] px-2.5 py-0.5 text-xs font-bold text-[var(--accent)]"
           >
             {tag}
           </span>
         ))}
       </div>
-      <span className="truncate text-sm text-zinc-500">
+      <span className="truncate text-sm text-[var(--text-sub)]">
         {customer.lastVisit}
       </span>
-      <span className="truncate text-sm text-zinc-500">
+      <span className="truncate text-sm text-[var(--text-sub)]">
         {customer.lastVisitPharmacist}
       </span>
       <button
@@ -129,7 +129,7 @@ export default function CustomerRow({
           onDelete();
         }}
         aria-label={`${customer.name} 삭제`}
-        className="flex size-8 items-center justify-center justify-self-end rounded-md text-zinc-400 transition-colors hover:bg-red-50 hover:text-red-600"
+        className="flex size-8 items-center justify-center justify-self-end rounded-xl text-[var(--text-sub)] transition-all duration-200 hover:bg-[#fdecee] hover:text-[var(--error)]"
       >
         <TrashIcon className="size-4" />
       </button>

@@ -29,7 +29,7 @@ export default function Modal({
         role="dialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
-        className={`w-full ${widthClassName} rounded-xl bg-white p-6 shadow-xl`}
+        className={`w-full ${widthClassName} rounded-2xl bg-[var(--card)] p-6 shadow-[0_2px_10px_rgba(0,0,0,0.1)]`}
       >
         {children}
       </div>

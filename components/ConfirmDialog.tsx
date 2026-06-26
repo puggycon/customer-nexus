@@ -18,21 +18,21 @@ export default function ConfirmDialog({
         role="alertdialog"
         aria-modal="true"
         onClick={(e) => e.stopPropagation()}
-        className="w-full max-w-sm rounded-xl bg-white p-5 shadow-xl"
+        className="w-full max-w-sm rounded-2xl bg-[var(--card)] p-5 shadow-[0_2px_10px_rgba(0,0,0,0.1)]"
       >
-        <p className="text-sm text-zinc-700">{message}</p>
+        <p className="text-sm text-[var(--text)]">{message}</p>
         <div className="mt-4 flex justify-end gap-2">
           <button
             type="button"
             onClick={onCancel}
-            className="rounded-full px-4 py-2 text-sm font-medium text-zinc-600 transition-colors hover:bg-zinc-100"
+            className="rounded-xl px-4 py-2 text-sm font-bold text-[var(--text-sub)] transition-colors duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
           >
             취소
           </button>
           <button
             type="button"
             onClick={onConfirm}
-            className="rounded-full bg-red-600 px-4 py-2 text-sm font-medium text-white transition-all duration-150 hover:bg-red-500 hover:shadow-lg hover:shadow-red-500/30"
+            className="rounded-xl bg-[var(--error)] px-4 py-2 text-sm font-bold text-white transition-all duration-200 hover:brightness-95 active:scale-[0.97]"
           >
             삭제
           </button>
