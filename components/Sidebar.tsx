@@ -1,5 +1,6 @@
 import SearchField from "./SearchField";
-import { LogoutIcon, SettingsIcon } from "./icons";
+import LogoutButton from "./LogoutButton";
+import { SettingsIcon } from "./icons";
 
 export default function Sidebar() {
   return (
@@ -20,13 +21,7 @@ export default function Sidebar() {
         >
           <SettingsIcon className="size-5" />
         </button>
-        <button
-          type="button"
-          aria-label="로그아웃"
-          className="flex size-9 items-center justify-center rounded-xl text-[var(--text-sub)] transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
-        >
-          <LogoutIcon className="size-5" />
-        </button>
+        <LogoutButton />
       </div>
     </aside>
   );
