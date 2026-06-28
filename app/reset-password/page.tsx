@@ -1,19 +1,18 @@
 "use client";
 
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
 
-export default function LoginPage() {
+export default function ResetPasswordPage() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [passwordConfirm, setPasswordConfirm] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [toast, setToast] = useState("");
 
-  // 이메일, 비밀번호가 모두 입력됐을 때만 로그인 버튼 활성화
-  const canSubmit = email.trim() !== "" && password.trim() !== "";
+  // 새 비밀번호와 비밀번호 확인이 모두 입력됐을 때만 버튼 활성화
+  const canSubmit = password.trim() !== "" && passwordConfirm.trim() !== "";
 
   // 토스트 메세지는 일정 시간 후 자동으로 사라지게 함
   useEffect(() => {
@@ -26,24 +25,28 @@ export default function LoginPage() {
     e.preventDefault();
     if (!canSubmit || isSubmitting) return;
 
+    // 새 비밀번호와 확인 값이 일치하는지 검사
+    if (password !== passwordConfirm) {
+      setToast("비밀번호가 일치하지 않습니다.");
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       const supabase = createClient();
-      const { error } = await supabase.auth.signInWithPassword({
-        email: email.trim(),
-        password,
-      });
+      const { error } = await supabase.auth.updateUser({ password });
 
       if (error) {
-        setToast("이메일 또는 비밀번호가 올바르지 않습니다.");
+        setToast("비밀번호 재설정에 실패했습니다. 다시 시도해 주세요.");
         setIsSubmitting(false);
         return;
       }
 
-      // 로그인 성공 시 인덱스 페이지로 이동
+      // 재설정 성공 시 인덱스 페이지로 이동
       router.push("/");
+      router.refresh();
     } catch {
-      setToast("로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      setToast("비밀번호 재설정에 실패했습니다. 다시 시도해 주세요.");
       setIsSubmitting(false);
     }
   }
@@ -60,43 +63,46 @@ export default function LoginPage() {
       )}
 
       <div className="w-full max-w-sm rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
-        <h1 className="mb-8 text-center text-2xl font-bold tracking-tight text-[var(--accent)]">
-          탑미래약국 고객 관리 프로그램
+        <h1 className="mb-2 text-center text-2xl font-bold tracking-tight text-[var(--accent)]">
+          비밀번호 재설정
         </h1>
+        <p className="mb-8 text-center text-sm text-[var(--text-sub)]">
+          새로운 비밀번호를 입력해 주세요.
+        </p>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div>
             <label
-              htmlFor="login-email"
+              htmlFor="new-password"
               className="mb-1 block text-xs font-bold text-[var(--text-sub)]"
             >
-              이메일
+              새 비밀번호
             </label>
             <input
-              id="login-email"
-              type="email"
-              autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="example@email.com"
+              id="new-password"
+              type="password"
+              autoComplete="new-password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="새 비밀번호를 입력하세요"
               className="w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--placeholder)] transition-colors duration-200 focus:border-[var(--accent)] focus:outline-none"
             />
           </div>
 
           <div>
             <label
-              htmlFor="login-password"
+              htmlFor="new-password-confirm"
               className="mb-1 block text-xs font-bold text-[var(--text-sub)]"
             >
-              비밀번호
+              새 비밀번호 확인
             </label>
             <input
-              id="login-password"
+              id="new-password-confirm"
               type="password"
-              autoComplete="current-password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              placeholder="비밀번호를 입력하세요"
+              autoComplete="new-password"
+              value={passwordConfirm}
+              onChange={(e) => setPasswordConfirm(e.target.value)}
+              placeholder="새 비밀번호를 다시 입력하세요"
               className="w-full rounded-[10px] border border-[var(--border)] bg-[var(--card)] px-3 py-2 text-sm text-[var(--text)] placeholder:text-[var(--placeholder)] transition-colors duration-200 focus:border-[var(--accent)] focus:outline-none"
             />
           </div>
@@ -106,29 +112,9 @@ export default function LoginPage() {
             disabled={!canSubmit || isSubmitting}
             className="mt-2 w-full rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:bg-[var(--accent-hover)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-[var(--accent)] disabled:active:scale-100"
           >
-            {isSubmitting ? "로그인 중..." : "로그인"}
+            {isSubmitting ? "변경 중..." : "비밀번호 변경"}
           </button>
         </form>
-
-        <p className="mt-6 text-center text-sm text-[var(--text-sub)]">
-          비밀번호를 잊으셨나요?{" "}
-          <Link
-            href="/forgot-password"
-            className="font-bold text-[var(--accent)] transition-colors duration-200 hover:text-[var(--accent-hover)]"
-          >
-            비밀번호 찾기
-          </Link>
-        </p>
-
-        <p className="mt-2 text-center text-sm text-[var(--text-sub)]">
-          아직 회원이 아니신가요?{" "}
-          <Link
-            href="/signup"
-            className="font-bold text-[var(--accent)] transition-colors duration-200 hover:text-[var(--accent-hover)]"
-          >
-            회원가입
-          </Link>
-        </p>
       </div>
     </div>
   );
