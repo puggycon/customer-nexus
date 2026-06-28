@@ -34,7 +34,27 @@ export const updateSession = async (request: NextRequest) => {
   // IMPORTANT: Do not run code between createServerClient and getUser().
   // A simple mistake could make it very hard to debug issues with users
   // being randomly logged out. This call refreshes the session.
-  await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  // 로그인하지 않은 사용자는 보호된 페이지(상단 헤더/사이드바/메인/고객 입력창)에
+  // 접근할 수 없도록 로그인 페이지로 리다이렉트한다. 로그인/회원가입 페이지는 예외.
+  const { pathname } = request.nextUrl;
+  const isAuthPage = pathname.startsWith("/login") || pathname.startsWith("/signup");
+
+  if (!user && !isAuthPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/login";
+    return NextResponse.redirect(url);
+  }
+
+  // 이미 로그인한 사용자가 로그인/회원가입 페이지로 접근하면 인덱스로 보낸다.
+  if (user && isAuthPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/";
+    return NextResponse.redirect(url);
+  }
 
   // IMPORTANT: Return the supabaseResponse object as-is so the refreshed
   // session cookies are preserved.
