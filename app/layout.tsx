@@ -1,8 +1,11 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
+import { cookies } from "next/headers";
 import { CustomerProvider } from "@/components/CustomerContext";
 import { SelectionProvider } from "@/components/SelectionContext";
 import { SearchProvider } from "@/components/SearchContext";
+import AuthWatcher from "@/components/AuthWatcher";
+import { createClient } from "@/utils/supabase/server";
 import { getCustomers } from "@/utils/customers";
 import "./globals.css";
 
@@ -28,7 +31,12 @@ export default async function RootLayout({
   children: React.ReactNode;
   modal: React.ReactNode;
 }>) {
-  const customers = await getCustomers();
+  // 현재 로그인한 사용자를 확인하고, 본인 데이터만 불러온다.
+  const supabase = createClient(await cookies());
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  const customers = user ? await getCustomers(user.id) : [];
 
   return (
     <html
@@ -36,7 +44,10 @@ export default async function RootLayout({
       className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="min-h-full flex flex-col">
-        <CustomerProvider initialCustomers={customers}>
+        <AuthWatcher currentUserId={user?.id ?? null} />
+        {/* key 를 사용자 id 로 지정해, 계정이 바뀌면 Provider 가 새로 마운트되어
+            데이터(클라이언트 상태)가 처음부터 다시 초기화되도록 한다. */}
+        <CustomerProvider key={user?.id ?? "logged-out"} initialCustomers={customers}>
           <SelectionProvider>
             <SearchProvider>
               {children}
