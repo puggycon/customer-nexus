@@ -1,9 +1,11 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { createClient } from "@/utils/supabase/client";
+import kakaoLoginImage from "@/public/kakao_login_large_wide.png";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -44,6 +46,31 @@ export default function LoginPage() {
       router.push("/");
     } catch {
       setToast("로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+      setIsSubmitting(false);
+    }
+  }
+
+  // 카카오 OAuth 로그인. 성공 시 카카오 인증 페이지로 리다이렉트되고,
+  // 인증 후 /auth/callback 에서 code 를 세션으로 교환한 뒤 인덱스로 이동한다.
+  async function handleKakaoLogin() {
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    try {
+      const supabase = createClient();
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: "kakao",
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        },
+      });
+
+      if (error) {
+        setToast("카카오 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
+        setIsSubmitting(false);
+      }
+    } catch {
+      setToast("카카오 로그인에 실패했습니다. 잠시 후 다시 시도해 주세요.");
       setIsSubmitting(false);
     }
   }
@@ -107,6 +134,21 @@ export default function LoginPage() {
             className="mt-2 w-full rounded-xl bg-[var(--accent)] px-5 py-2.5 text-sm font-bold text-white transition-all duration-200 hover:bg-[var(--accent-hover)] active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:bg-[var(--accent)] disabled:active:scale-100"
           >
             {isSubmitting ? "로그인 중..." : "로그인"}
+          </button>
+
+          <button
+            type="button"
+            onClick={handleKakaoLogin}
+            disabled={isSubmitting}
+            aria-label="카카오 로그인"
+            className="block w-full overflow-hidden rounded-xl transition-all duration-200 hover:opacity-90 active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-50 disabled:hover:opacity-100 disabled:active:scale-100"
+          >
+            <Image
+              src={kakaoLoginImage}
+              alt="카카오 로그인"
+              className="h-auto w-full"
+              priority
+            />
           </button>
         </form>
 
