@@ -1,3 +1,4 @@
+import Link from "next/link";
 import SearchField from "./SearchField";
 import LogoutButton from "./LogoutButton";
 import { SettingsIcon } from "./icons";
@@ -13,15 +14,23 @@ export default function Sidebar() {
         <SearchField label="폰 번호 검색" placeholder="0000-0000" type="phone" field="phone" />
         <SearchField label="마지막 상담 판매 약사" placeholder="약사명 검색" field="pharmacist" />
       </div>
-      <div className="flex items-center gap-2 border-t border-[var(--border)] p-4">
-        <button
-          type="button"
-          aria-label="설정 및 옵션"
-          className="flex size-9 items-center justify-center rounded-xl text-[var(--text-sub)] transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
+      <div className="border-t border-[var(--border)]">
+        <div className="flex items-center gap-2 p-4">
+          <button
+            type="button"
+            aria-label="설정 및 옵션"
+            className="flex size-9 items-center justify-center rounded-xl text-[var(--text-sub)] transition-all duration-200 hover:bg-[var(--hover-bg)] hover:text-[var(--accent)]"
+          >
+            <SettingsIcon className="size-5" />
+          </button>
+          <LogoutButton />
+        </div>
+        <Link
+          href="/privacy"
+          className="block px-4 pb-4 text-xs text-gray-500 hover:underline"
         >
-          <SettingsIcon className="size-5" />
-        </button>
-        <LogoutButton />
+          개인정보 처리방침
+        </Link>
       </div>
     </aside>
   );

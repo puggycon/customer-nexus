@@ -47,8 +47,10 @@ export const updateSession = async (request: NextRequest) => {
     pathname.startsWith("/signup") ||
     pathname.startsWith("/forgot-password");
   const isAuthCallback = pathname.startsWith("/auth");
+  // 개인정보 처리방침은 인증 여부와 무관하게 누구나 접근할 수 있어야 한다.
+  const isPublicPage = pathname.startsWith("/privacy");
 
-  if (!user && !isAuthPage && !isAuthCallback) {
+  if (!user && !isAuthPage && !isAuthCallback && !isPublicPage) {
     const url = request.nextUrl.clone();
     url.pathname = "/login";
     return NextResponse.redirect(url);
