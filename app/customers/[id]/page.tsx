@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import CustomerDetailView from "@/components/CustomerDetailView";
+
+export const metadata: Metadata = {
+  title: "고객 상세",
+  description: "고객의 상세 정보와 방문 이력을 확인합니다.",
+};
 
 export default async function CustomerDetailPage({
   params,

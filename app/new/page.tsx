@@ -1,4 +1,10 @@
+import type { Metadata } from "next";
 import NewCustomerForm from "@/components/NewCustomerForm";
+
+export const metadata: Metadata = {
+  title: "새 고객 등록",
+  description: "새로운 고객 정보를 등록합니다.",
+};
 
 export default function NewCustomerPage() {
   return (

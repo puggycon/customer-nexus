@@ -24,7 +24,7 @@ export default function Header() {
           aria-label="페이지 새로고침"
           className="cursor-pointer transition-colors duration-200 hover:text-[var(--accent)]"
         >
-          탑미래약국 고객 관리 프로그램
+          약국 고객 관리 Customer Nexus
         </button>
       </h1>
       <div className="flex items-center gap-2">

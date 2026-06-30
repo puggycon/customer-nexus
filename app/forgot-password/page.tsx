@@ -65,7 +65,9 @@ export default function ForgotPasswordPage() {
 
       <div className="w-full max-w-sm rounded-2xl border border-[var(--border)] bg-[var(--card)] p-8 shadow-[0_2px_16px_rgba(0,0,0,0.06)]">
         <h1 className="mb-2 text-center text-2xl font-bold tracking-tight text-[var(--accent)]">
-          탑미래약국 고객 관리 프로그램
+          약국 고객 관리
+          <br />
+          Customer Nexus
         </h1>
         <p className="mb-8 text-center text-sm text-[var(--text-sub)]">
           가입한 이메일로 비밀번호 재설정 링크를 보내드립니다.
